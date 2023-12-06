@@ -1,0 +1,71 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item active">Revisar Ciclos de Esterilización</li>
+</ol>
+    <!--
+    <div>
+        <img src="{% static 'revisar_usuarios/revisando.jpg' %}" width="100">    
+    </div>
+        Para ver los datos en API dar click 
+        <a href="examinar">AQUÍ</a>
+        </br>
+    -->    
+    {% for registro in registros %}
+    {{registro}}
+    {% endfor %} 
+
+
+<!--Historial de usuario seleccionado-->
+    <small >
+        <div class="card mb-3">
+            <!--
+            <div class="card-header">
+            <i class="fas fa-table"></i>
+            Historial</div>
+            -->
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
+                        <thead>
+                            <tr role="row"><th class="sorting_desc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-sort="descending" aria-label="Name: activate to sort column asccending" style="width: 15px;">No.</th><th class="sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 157px;">Fecha y hora</th><th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 248px;">Registro del ciclo de esterilización</th></tr>
+                        </thead>
+                        <!--
+                        <tfoot>
+                                class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 248px;"
+                            <tr><th rowspan="1" colspan="1">Name</th><th rowspan="1" colspan="1">Position</th><th rowspan="1" colspan="1">Office</th><th rowspan="1" colspan="1">Age</th><th rowspan="1" colspan="1">Start date</th><th rowspan="1" colspan="1">Salary</th></tr>
+                        </tfoot>
+                        -->
+                        <tbody>
+                            <tr>
+                                <td scope="col"> 1 </td>
+                                <td scope="col"> 5/12/2023</td>
+                                <td scope="col"> <a href="{% static '1.pdf'%}" target="_blank">5/12/2023</a> </td>
+                            </tr>
+                            {% for numero_suceso,suceso in historial_organizado.items %}
+                            <tr>
+                                <td scope="col"> {{numero_suceso}} </td>
+                                <td scope="col"> {{suceso.fecha_hora}} </td>
+                                <td scope="col"> {{suceso.suceso}} </td>
+                            </tr>
+                            {% endfor %}            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </small>
+
+
+    <!--
+    <p>Cedula:                      {{usuario_seleccionado.cedula}}</p>
+    <p>Fecha de nacimiento:         {{usuario_seleccionado.fecha_nacimiento}}</p>
+    </small>
+    -->
+
+                    
+{% endblock %}
+

@@ -1,0 +1,83 @@
+{% load static%}
+
+<html>
+    <head>
+        <title>Página Electroestimulador</title>
+        <meta name="copyright" content="© 2020 MDC">
+        <link rel="shotcut icon" type="image/x-icon" href="static/icono_alternativo.ico" >
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <link rel="stylesheet" href="{% static 'estilo_pagina_inicio.css' %}">
+       
+       
+    </head>
+
+    <body>
+        <header>
+                
+            <div>
+                <img src="{% static 'logo_alternativo.jpg' %}" width="100">
+                <!--<img src="static/logo_alternativo.jpg" width="100">-->
+            </div>
+            <nav>
+                <ul>
+                    <li> <a href="{% url 'pagina_inicio' %}"> <h3>Inicio</h3> </a>  </li>
+                    
+                    {% if request.user.is_authenticated %}
+                    
+                    <li> <a href="/revisar/"> <h3>Revisar usuarios</h3> </a> </li>
+                    <li> <a href="/gestion"> <h3>Gestionar usuarios</h3> </a> </li>
+                    <li> <a href="/terapias"> <h3>Gestionar terapias</h3> </a> </li>
+                    
+                    
+                    <li> <a href={% url 'logout' %}> <h3>Salir</h3>  </a> </li>
+                    <!-- <li> <a href="/admin"> <h3>Administrar</h3>  </a> </li> -->
+
+                    {% else %}
+                    
+                    <li> <a href={% url 'login' %}> <h3>Ingresar</h3>  </a> </li>
+
+                    {% endif %}
+
+                </ul>
+            </nav>
+        </header>
+
+        
+
+        <!--<section class="wrapper">-->
+        <section class="main">
+            <section class="articles">
+            {% block content %}
+            {% endblock %}
+            </section>
+
+            <aside>
+                <h4> How to use the electrodes</h4>
+                   <!-- Aquí encuentras una imagen ilustrativa -->
+                    <figure>
+                        <img src="{% static 'ubicacion_electrodos.jpg' %}" width="150">
+                        <figcaption>User guide</figcaption>
+                    </figure>
+                    
+
+                 
+            </aside>
+        </section>
+
+        <footer>
+                <address>
+                        Realizado por <abr title="enviar mail"><a href="mailto:miguelavilafigueroa@hotmail.com"> Nombre </a></abr><br> 
+                        Visitanos en: Calle 10 10-10<br>
+                        Bogotá, Colombia<br>
+                        <small>
+                                Todos los derechos reservados
+                        </small>
+                </address>
+            
+            
+        </footer>
+
+
+    </body>
+
+</html>

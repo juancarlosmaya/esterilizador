@@ -1,0 +1,80 @@
+{% extends "django_sb_admin/base.html" %}
+{% load static%}
+
+{% block title %}MAF - QUANTUM{% endblock %}
+{% block sb_admin_header_url %}{% endblock sb_admin_header_url %}
+{% block sb_admin_header %}
+    <a href="">Trazabilidad</a>
+{% endblock sb_admin_header %}
+{% block sb_admin_title %} Miicro Regenerador Celular {% endblock sb_admin_title %}
+{% block sb_admin_breadcrumb %}{% endblock sb_admin_breadcrumb %}
+{% block sb_admin_navbar_right %}{% endblock sb_admin_navbar_right %}
+
+{% block sb_admin_content %}
+    {% block content %}
+    {% endblock %}
+
+{% endblock sb_admin_content %}
+    
+{% block sb_admin_sidebar %}
+    
+        {% if request.user.is_authenticated %}
+            <li class="nav-item active">
+                <a class="nav-link" href="/revisar/">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Revisar usuarios</span>
+                </a>
+            </li>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class="fas fa-fw fa-table"></i>
+                  <span>Gestionar usuarios</span>
+                </a>
+                <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+                  <h6 class="dropdown-header">Nuevo usuario:</h6>
+                  <a class="dropdown-item" href="{% url 'nuevo_usuario' %}">Crear</a>
+                  <!--
+                  <a class="dropdown-item" href="{% url 'pagina_inicio' %}">Registro de nuevo paciente</a>
+                  <a class="dropdown-item" href="{% url 'pagina_inicio' %}">Forgot Password</a>
+                  -->
+                  <div class="dropdown-divider"></div>
+                  <h6 class="dropdown-header">Usuarios registrados</h6>
+                  <a class="dropdown-item" href="{% url 'modificar_seleccionar_usuario' %}">Modificar</a>
+                  <!--
+                  <a class="dropdown-item" href="{% url 'pagina_inicio' %}">Blank Page</a>
+                  -->
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="/terapias">
+                  <i class="fas fa-fw fa-folder"></i>
+                  <span>Gestionar terapias</span></a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link" href="">
+                  <i class="fas fa-sign-out-alt"></i>
+                  <span>Salir</span></a>
+            </li>
+            
+
+            
+        {% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="">
+                <i class="fas fa-sign-in-alt"></i>
+                <span>Ingresar</span></a>
+            </li>
+        {% endif %}
+
+    
+
+            
+
+
+{% endblock sb_admin_sidebar %}
+
+{% block sb_admin_copyright %}Version django3. Derechos reservados © MAF - QUANTUM 2020{% endblock sb_admin_copyright %}
+
