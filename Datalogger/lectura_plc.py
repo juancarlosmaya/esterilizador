@@ -1,9 +1,11 @@
 import serial
 import time
 import fpdf
+import unicodedata
 
 
-NUMERO_DE_ARCHCIVO=0
+
+NOMBRE_DE_ARCHCIVO="0"
 # Open the serial port
 print("abriendo pueto")
 try:
@@ -18,7 +20,9 @@ try:
             line = line.decode('Latin-1').replace("\r", "\n")   # conversion a cadena de texto, remplazando retorno de carro por nueva linea
         
         print("TIENE LA PALABRA FECHA")
-        
+        NOMBRE_DE_ARCHCIVO = line.replace("\n", " ").replace(":", " ").replace("\n", " ").replace("/","-").split('<')[0]
+        NOMBRE_DE_ARCHCIVO="".join(x for x in NOMBRE_DE_ARCHCIVO if x.isalnum())
+        print(NOMBRE_DE_ARCHCIVO)
         # Create a new PDF document
         pdf = fpdf.FPDF()
         # Set the font
@@ -40,8 +44,8 @@ try:
         line2 = line2+line
         
         pdf.write(5,line2)
-        pdf.output(str(NUMERO_DE_ARCHCIVO)+'.pdf')
-        NUMERO_DE_ARCHCIVO=NUMERO_DE_ARCHCIVO+1
+
+        pdf.output(NOMBRE_DE_ARCHCIVO+'.pdf')
         time.sleep(0.5)
 except:
     print("error")
