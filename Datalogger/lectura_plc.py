@@ -45,7 +45,7 @@ try:
         
         pdf.write(5,line2)
 
-        pdf.output(NOMBRE_DE_ARCHCIVO+'.pdf')
+        pdf.output("..\servidor_local\static\ "+ NOMBRE_DE_ARCHCIVO +".pdf")
         time.sleep(0.5)
 except:
     print("error")
