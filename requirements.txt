@@ -1,7 +1,7 @@
 asgiref==3.7.2
 certifi==2023.7.22
 charset-normalizer==3.3.2
-Django==5.0
+Django==4.2.8
 django-sb-admin==5.5.1.1
 fpdf==1.7.2
 helper==2.5.0
