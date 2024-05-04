@@ -1,0 +1,4 @@
+envío por usb
+si arranca el ciclo y se aborta debe terminar(ciclo abortado)
+imprimir ciclo completo, no hasta el primer
+probar con la Y rs232

@@ -4,19 +4,27 @@ import fpdf
 import unicodedata
 
 
+PUERTO = 'COM7'             #WINDOWS
+#PUERTO = '/dev/ttyUSB0'    #LINUX
+
+DIRECTORIO= '..\servidor_local\static\ '    #WINDOWS
+#DIRECTORIO= '../servidor_local/static'     #LINUX
 
 NOMBRE_DE_ARCHCIVO="0"
 # Open the serial port
 print("abriendo pueto")
 try:
-    ser = serial.Serial(port='COM7', bytesize=8, parity='E', baudrate = 19600, stopbits=1,timeout=0.5)
-    
+    # ser = serial.Serial(port='COM7', bytesize=8, parity='E', baudrate = 19600, stopbits=1,timeout=0.5)
+    ser = serial.Serial(port='COM28', bytesize=8, parity='E', baudrate = 115200, stopbits=1,timeout=0.5)
+    ser_impresora = serial.Serial(port='COM7', bytesize=8, parity='N', baudrate = 115200, stopbits=1,timeout=0.5)
+
     while True:
         line2= ""
         line =""
         while not ("FECHA" in  line):
             print("...")
-            line = ser.read_until()                             # lectura de cadena recibida en binario                                
+            line = ser.read_until()                             # lectura de cadena recibida en binario
+            ser_impresora.write(line)                           # envio de informació leida del plc a impresora     
             line = line.decode('Latin-1').replace("\r", "\n")   # conversion a cadena de texto, remplazando retorno de carro por nueva linea
         
         print("TIENE LA PALABRA FECHA")
@@ -36,6 +44,7 @@ try:
             print(ser.in_waiting)
             line2 = line2+line
             line = ser.read_until()                             # lectura de cadena recibida en binario 
+            ser_impresora.write(line)                           # envio de informació leida del plc a impresora
             line = line.decode('Latin-1').replace("\r", "\n")   # conversion a cadena de texto, remplazando retorno de carro por nueva linea
             time.sleep(0.5)
 
