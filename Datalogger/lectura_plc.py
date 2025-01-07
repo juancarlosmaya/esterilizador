@@ -2,6 +2,7 @@ import serial
 import time
 import fpdf
 import unicodedata
+import fitz
 
 
 PUERTO = 'COM7'             #WINDOWS
@@ -31,6 +32,21 @@ try:
         NOMBRE_DE_ARCHCIVO = line.replace("\n", " ").replace(":", " ").replace("\n", " ").replace("/","-").split('<')[0]
         NOMBRE_DE_ARCHCIVO="".join(x for x in NOMBRE_DE_ARCHCIVO if x.isalnum())
         print(NOMBRE_DE_ARCHCIVO)
+        
+        # Metadatos del PDF a crear
+        metadata = {
+            'Title': NOMBRE_DE_ARCHCIVO,  # Usamos el nombre del archivo como título
+            'Author': 'Nombre del Autor',  # Reemplaza con el autor real
+            'Subject': 'Datos del Esterilizador',  # Reemplaza con el asunto real
+            'Keywords': 'Tipo estrilizador, Marca, Modelo, serie',  # Reemplaza con palabras clave reales
+            "Tipo de esterilizador": "Vapor", #opcional
+            "Volumen": "150 L", #opcional
+            "Marca": "MacroIngenio", #opcional
+            "Modelo": "150P2",   # Reemplazar
+            "Serie": "150P10FEB048RV",         # Reemplazar
+            "Registro Sanitario": "2016DM-0815021", # Reemplazar
+        }
+        
         # Create a new PDF document
         pdf = fpdf.FPDF()
         # Set the font
@@ -55,6 +71,17 @@ try:
         pdf.write(5,line2)
 
         pdf.output("..\servidor_local\static\ "+ NOMBRE_DE_ARCHCIVO +".pdf")
+        
+        # Añadir metadatos con PyMuPDF
+        try:
+            doc = fitz.open(ruta_completa)
+            doc.set_metadata(metadata)
+            doc.save(ruta_completa)
+            doc.close()
+            print(f"Metadatos añadidos a {NOMBRE_DE_ARCHCIVO}.pdf")
+        except Exception as e:
+             print(f"Error al agregar metadatos con pymupdf: {e}")
+        
         time.sleep(0.5)
 except:
     print("error")
