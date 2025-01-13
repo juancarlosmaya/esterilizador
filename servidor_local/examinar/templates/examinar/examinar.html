@@ -38,10 +38,10 @@
                         -->
                         <tbody>
                             
-                            {% for registro in registros %}
+                            {% for registro,fecha in registros_fechas %}
                             <tr>
                                 <!--<td scope="col"> 2 </td> -->
-                                <td scope="col"> 9/12/2023 </td>
+                                <td scope="col"> {{fecha}} </td>
                                 <td scope="col"> <a href="{% static registro%}" target="_blank">{{registro}}</a> </td>
                             </tr>
                             {% endfor %}
