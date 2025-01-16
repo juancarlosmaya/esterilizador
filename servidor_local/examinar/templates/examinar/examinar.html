@@ -1,6 +1,7 @@
 
 {% extends 'base.html' %}
 {% load static %}
+
 {% block content %}
 
 <ol class="breadcrumb mb-4">
@@ -28,7 +29,7 @@
                 <div class="table-responsive">
                     <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
                         <thead>
-                            <tr role="row"><th class="sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 157px;">Fecha y hora</th><th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 248px;">Registro del ciclo de esterilización</th></tr>
+                            <tr role="row"><th class="sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 157px;">Fecha y hora</th><th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 248px;">Registro del ciclo de esterilización</th><th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 248px;">Registro del ciclo de esterilización</th></tr>
                         </thead>
                         <!--
                         <tfoot>
@@ -38,11 +39,12 @@
                         -->
                         <tbody>
                             
-                            {% for registro,fecha in registros_fechas %}
+                            {% for registro, registro_sin_extension, fecha in registros_fechas %}
                             <tr>
                                 <!--<td scope="col"> 2 </td> -->
                                 <td scope="col"> {{fecha}} </td>
                                 <td scope="col"> <a href="{% static registro%}" target="_blank">{{registro}}</a> </td>
+                                <td scope="col"> <a href= "{{ registro_sin_extension }}" target="_blank"> Examinar registro </a> </td>
                             </tr>
                             {% endfor %}
 
