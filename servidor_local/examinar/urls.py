@@ -4,5 +4,5 @@ from .views import listado_view,examinar_registro
 
 urlpatterns = [
     path('', listado_view),
-    path("<str:registro>/", examinar_registro),
+    path("<str:archivo>/", examinar_registro),
 ]

@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.conf import settings
-import fitz  # PyMuPDF
+import fitz  # PyMuPDF, para leer PDFs
+import re    # Expresiones regulares
 import os
 import datetime
 
@@ -40,9 +41,6 @@ def listado_view(request):
                 print(f"Error al leer metadatos de {archivo}: {e}")
             registros_fechas = zip(registros_pdf, [archivo[:-4] for archivo in registros_pdf], fechas)  # guarda el listado de archivos en pdf, el litado de archivos sin extension, y las fechas de los registros
     return render(request,"examinar/examinar.html",{'registros_fechas':registros_fechas})
-
-import re
-import fitz  # PyMuPDF
 
 def extraer_texto_pdf(ruta_pdf):
     """
@@ -91,9 +89,9 @@ def procesar_datos_texto(texto):
     return datos
 
 
-def examinar_registro(request,registro):
+def examinar_registro(request,archivo):
     # Ruta al archivo PDF exportado como texto
-    ruta_archivo = "/Esterilizador/servidor_local/static/" + registro +".pdf"
+    ruta_archivo = "/Esterilizador/servidor_local/static/" + archivo +".pdf"
     # Extraer texto del PDF
     texto_extraido = extraer_texto_pdf(ruta_archivo)
 
@@ -104,4 +102,32 @@ def examinar_registro(request,registro):
     print("Series extraídas:")
     print("Temperaturas (TEMP):", resultados["TEMP"])
     print("Presiones (P):", resultados["P"])
-    return HttpResponse("Temperaturas (TEMP):" + str(resultados["TEMP"])+"<p>"+ "Presiones (P):" + str(resultados["P"]) )
+    metadata = {}
+    try:
+        doc = fitz.open(ruta_archivo )
+        metadata = doc.metadata
+        metadados_archivo = metadata
+        print(f"Metadatos de {archivo}:")
+        print(metadados_archivo)
+       
+        # Extraer datos relevantes
+        author_parts = metadados_archivo['author'].split(', ')
+        
+        keywords_parts = {k.split(':')[0]: k.split(':')[1] for k in metadados_archivo['keywords'].split(',')}
+        creation_date = metadados_archivo['creationDate'][2:]  # Eliminar el prefijo "D:"
+
+        # Formatear fecha y hora
+        fecha_hora = datetime.datetime.strptime(creation_date, "%Y%m%d%H%M%S")
+        fecha = fecha_hora.strftime("%d de %B de %Y")
+        hora = fecha_hora.strftime("%I:%M %p")
+        nueva_variable = list(keywords_parts.items()) + [('fecha', fecha), ('hora', hora)]
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+    except fitz.fitz.FileDataError: #Manejo de error si el archivo no es un PDF válido
+            print(f"Error: {archivo} no es un PDF valido o está corrupto")
+    except Exception as e:
+            print(f"Error al leer metadatos de {archivo}: {e}")
+    #registros_fechas = zip(registros_pdf, [archivo[:-4] for archivo in registros_pdf], fechas)  # guarda el listado de archivos en pdf, el litado de archivos sin extension, y las fechas de los registros
+    return render(request,"examinar/examinar_registro.html",{'metadatos':nueva_variable,'temperaturas':resultados["TEMP"],'presiones':resultados["P"]})
+
+   
