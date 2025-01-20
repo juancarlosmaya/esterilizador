@@ -5,10 +5,10 @@ import fitz  # PyMuPDF, para leer PDFs
 import re    # Expresiones regulares
 import os
 import datetime
+import json
 
 # Create your views here.
 def listado_view(request):
-    #DIRECTORIO= "/Users/JUAN CARLOS/Desktop/Esterilizador/Datalogger/REGISTROS"
     DIRECTORIO= "/Esterilizador/servidor_local/static"
     registrosi=os.listdir(DIRECTORIO)
     print(registrosi)
@@ -102,7 +102,7 @@ def examinar_registro(request,archivo):
     print("Series extraídas:")
     print("Temperaturas (TEMP):", resultados["TEMP"])
     print("Presiones (P):", resultados["P"])
-    metadata = {}
+    metadatos_final =[]
     try:
         doc = fitz.open(ruta_archivo )
         metadata = doc.metadata
@@ -120,7 +120,7 @@ def examinar_registro(request,archivo):
         fecha_hora = datetime.datetime.strptime(creation_date, "%Y%m%d%H%M%S")
         fecha = fecha_hora.strftime("%d de %B de %Y")
         hora = fecha_hora.strftime("%I:%M %p")
-        nueva_variable = list(keywords_parts.items()) + [('fecha', fecha), ('hora', hora)]
+        metadatos_final = list(keywords_parts.items()) + [('fecha', fecha), ('hora', hora)]
 
                                                                                                                                                                                                                                                                                                                                                                                                                                                            
     except fitz.fitz.FileDataError: #Manejo de error si el archivo no es un PDF válido
@@ -128,6 +128,6 @@ def examinar_registro(request,archivo):
     except Exception as e:
             print(f"Error al leer metadatos de {archivo}: {e}")
     #registros_fechas = zip(registros_pdf, [archivo[:-4] for archivo in registros_pdf], fechas)  # guarda el listado de archivos en pdf, el litado de archivos sin extension, y las fechas de los registros
-    return render(request,"examinar/examinar_registro.html",{'metadatos':nueva_variable,'temperaturas':resultados["TEMP"],'presiones':resultados["P"]})
+    return render(request,"examinar/examinar_registro.html",{'metadatos':metadatos_final,'temperaturas':resultados["TEMP"],'presiones':resultados["P"]})
 
    
