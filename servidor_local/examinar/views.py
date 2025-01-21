@@ -64,8 +64,9 @@ def procesar_datos_texto(texto):
     :return: Diccionario con las series de TEMP y P.
     """
     datos = {
+        "NUMERO_CICLO" : 0,
         "TEMP": [],
-        "P": []
+        "P": []        
     }
 
     try:
@@ -74,6 +75,10 @@ def procesar_datos_texto(texto):
             print(linea)
             temp_match = re.search(r"TEMP:\s*(\d+)", linea)
             p_match = re.search(r"P:\s*(\d+)\s*kpa", linea)
+            ciclo_match = re.search(r"CICLO N:\s*�*\s*(\d+)", linea)
+
+            if ciclo_match:
+                datos['NUMERO_CICLO'] = ciclo_match.group(1)# Capture the numeric value
 
             if temp_match:
                 # Agregar la temperatura extraída a la lista TEMP
@@ -100,27 +105,39 @@ def examinar_registro(request,archivo):
 
     # Mostrar los resultados
     print("Series extraídas:")
+    print(f"Número de ciclo: {resultados['NUMERO_CICLO']}")
     print("Temperaturas (TEMP):", resultados["TEMP"])
     print("Presiones (P):", resultados["P"])
     metadatos_final =[]
+    keywords_parts ={}
+    fecha = ""
+    hora = ""
+    numero_ciclo = 0
     try:
         doc = fitz.open(ruta_archivo )
         metadata = doc.metadata
         metadados_archivo = metadata
         print(f"Metadatos de {archivo}:")
         print(metadados_archivo)
+
+        numero_ciclo = resultados['NUMERO_CICLO']
        
         # Extraer datos relevantes
         author_parts = metadados_archivo['author'].split(', ')
+        print("voy aqui")
+        keywords_parts = ({k.split(':')[0]: k.split(':')[1] for k in metadados_archivo['keywords'].split(',')} if metadados_archivo.get('keywords') else {})
+        print("voy aqui2")
+        creation_date = metadados_archivo['creationDate'][2:]  # Eliminar el prefijo "D:"   
+        print(creation_date)
         
-        keywords_parts = {k.split(':')[0]: k.split(':')[1] for k in metadados_archivo['keywords'].split(',')}
-        creation_date = metadados_archivo['creationDate'][2:]  # Eliminar el prefijo "D:"
-
+        # Remove trailing "Z"
+        if creation_date.endswith("Z"):
+            creation_date = creation_date[:-1]
         # Formatear fecha y hora
         fecha_hora = datetime.datetime.strptime(creation_date, "%Y%m%d%H%M%S")
+        print(fecha_hora)
         fecha = fecha_hora.strftime("%d de %B de %Y")
         hora = fecha_hora.strftime("%I:%M %p")
-        metadatos_final = list(keywords_parts.items()) + [('fecha', fecha), ('hora', hora)]
 
                                                                                                                                                                                                                                                                                                                                                                                                                                                            
     except fitz.fitz.FileDataError: #Manejo de error si el archivo no es un PDF válido
@@ -128,6 +145,8 @@ def examinar_registro(request,archivo):
     except Exception as e:
             print(f"Error al leer metadatos de {archivo}: {e}")
     #registros_fechas = zip(registros_pdf, [archivo[:-4] for archivo in registros_pdf], fechas)  # guarda el listado de archivos en pdf, el litado de archivos sin extension, y las fechas de los registros
-    return render(request,"examinar/examinar_registro.html",{'metadatos':metadatos_final,'temperaturas':resultados["TEMP"],'presiones':resultados["P"]})
+    metadatos_final = list(keywords_parts.items()) + [('fecha de cracion de registro', fecha), ('hora de creacion de regitro', hora), ('numero de ciclo', numero_ciclo)]
+
+    return render(request,"examinar/examinar_registro.html",{'metadatos':metadatos_final,'temperaturas':resultados["TEMP"][1::],'presiones':resultados["P"]})
 
    

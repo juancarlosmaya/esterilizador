@@ -1,18 +1,13 @@
 // Set new default font family and font color to mimic Bootstrap's default styling
 Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
 Chart.defaults.global.defaultFontColor = '#292b2c';
-console.log(temperaturas);  // Output the array to check it's accessible
-console.log(presiones);  // Output the array to check it's accessible
+console.log(temperaturas.length);  // Output the array to check it's accessible
+console.log(presiones.length);  // Output the array to check it's accessible
 
 // Area Chart Example  
 var ejeX =[];
-for (i=0;i<256;i++){
+for (i=0;i<temperaturas.length;i++){
   ejeX[i]=i;
-}
-
-var ejeY=[];
-for (i=0;i<256;i++){
-  ejeY[i]=2;
 }
 
 var ctx = document.getElementById("grafica");
@@ -89,12 +84,12 @@ var myLineChart = new Chart(ctx, {
           },
           scaleLabel: {
             display: true,
-            labelString: 'Presion (Kpa)'
+            labelString: 'Temperatura (°C)'
           }
         },
         {
           id: 'y-axis-2',  // Second Y axis (for temperaturas)
-          position: 'right',  // Position it on the right side
+          position: 'left',  // Position it on the right side
           ticks: {
             // Adjust the Y axis range for temperature if needed
             // min: 0, max: 50,
@@ -105,7 +100,7 @@ var myLineChart = new Chart(ctx, {
           },
           scaleLabel: {
             display: true,
-            labelString: 'Temperaturas (°C)'
+            labelString: 'Presion (Kpa)'
           }
         }
       ]
