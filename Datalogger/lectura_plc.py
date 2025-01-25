@@ -2,6 +2,8 @@ import serial
 import time
 import datetime
 import fitz
+import pytz
+import re
 
 # Nombre del PDF a crear
 NOMBRE_DE_ARCHIVO = "0"
@@ -10,7 +12,7 @@ NOMBRE_DE_ARCHIVO = "0"
 metadata = {
     'author' : 'Esterilizador a vapor, Modelo: 150P2, Serie: 150P10FEB048RV',
     'title' : 'Trazabilidad esterilización',
-    'subject': 'Ciclo de esterilización 1',  
+    'subject': 'Ciclo de esterilización',  
     'creator' : 'MacroIngenio',
     'keywords' : 'tipo:vapor,Modelo:150P2,Serie:150P10FEB048RV,Volumen:150 L,Registro_Sanitario:INVIMA 2017DM-0016011',
     'creationDate' : '' ## se asigna más abajo
@@ -37,7 +39,13 @@ def guardar_pdf(texto):
             )
     print(texto)
     try:
-        today = datetime.datetime.now(datetime.timezone.utc)
+        # Definir la zona horaria de Colombia
+        colombia_timezone = pytz.timezone('America/Bogota')
+
+        # Obtener la hora actual en Colombia
+        today = datetime.datetime.now(colombia_timezone)
+
+        #today = datetime.datetime.now(datetime.timezone.utc)
         metadata["creationDate"] = today.strftime("D:%Y%m%d%H%M%S")
         print(metadata)
         doc.set_metadata(metadata)
@@ -52,7 +60,7 @@ def guardar_pdf(texto):
 print("abriendo pueto")
 try:
     #ser = serial.Serial(port='COM7', bytesize=8, parity='E', baudrate = 19600, stopbits=1,timeout=0.5)
-    ser = serial.Serial(port='COM7', bytesize=8, parity='E', baudrate = 115200, stopbits=1,timeout=0.5)
+    ser = serial.Serial(port='COM28', bytesize=8, parity='E', baudrate = 115200, stopbits=1,timeout=0.5)
     #ser_impresora = serial.Serial(port='COM7', bytesize=8, parity='N', baudrate = 115200, stopbits=1,timeout=0.5)
 
     while True:
@@ -70,7 +78,13 @@ try:
         NOMBRE_DE_ARCHIVO = line.replace("\n", " ").replace(":", " ").replace("\n", " ").replace("/","-").split('<')[0]
         NOMBRE_DE_ARCHIVO = "".join(x for x in NOMBRE_DE_ARCHIVO if x.isalnum())
         print(NOMBRE_DE_ARCHIVO)
+        match = re.search(r'CICLON(\d+)', NOMBRE_DE_ARCHIVO)
+        if match:
+            numero_ciclo = match.group(1)
+        else:
+            numero_ciclo =  " sin numero de ciclo"
 
+        NOMBRE_DE_ARCHIVO = "Ciclo No. " + numero_ciclo
 
         while not ("DESCARGA" in  line):
             print("LA CANTIDAD DE BYTES ACUMULADOS SON: ")

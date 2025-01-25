@@ -33,7 +33,7 @@ var myLineChart = new Chart(ctx, {
         yAxisID: 'y-axis-1'  // Assign this dataset to the first Y axis
       },
       {
-        label: "Presiones (kPa)",  // Label for the second dataset
+        label: "Presion (kPa)",  // Label for the second dataset
         lineTension: 0.3,
         backgroundColor: "rgba(255,99,132,0.2)",
         borderColor: "rgba(255,99,132,1)",
@@ -89,7 +89,7 @@ var myLineChart = new Chart(ctx, {
         },
         {
           id: 'y-axis-2',  // Second Y axis (for temperaturas)
-          position: 'left',  // Position it on the right side
+          position: 'right',  // Position it on the right side
           ticks: {
             // Adjust the Y axis range for temperature if needed
             // min: 0, max: 50,
