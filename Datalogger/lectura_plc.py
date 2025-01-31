@@ -20,11 +20,14 @@ metadata = {
 
 # Ubicación del PDF a crear
 DIRECTORIO= '..\servidor_local\static\ '    #WINDOWS
-#DIRECTORIO= '../servidor_local/static'     #LINUX
+#DIRECTORIO= '..//servidor_local//static//'     #LINUX
 
-PUERTO = 'COM7'             #WINDOWS
-#PUERTO = '/dev/ttyUSB0'    #LINUX
+## puerto de comunicacion con PLC
+PUERTO_PLC = 'COM7'             #WINDOWS
+#PUERTO_PLC = '/dev/ttyUSB0'    #LINUX
 
+## puerto de comunicacion con impresora, quitar comentarios más abajo
+#PUERTO_IMPRESORA = '/dev/ttyUSB1'    #LINUX
 
 def guardar_pdf(texto):
     doc = fitz.open()
@@ -60,8 +63,8 @@ def guardar_pdf(texto):
 print("abriendo pueto")
 try:
     #ser = serial.Serial(port='COM7', bytesize=8, parity='E', baudrate = 19600, stopbits=1,timeout=0.5)
-    ser = serial.Serial(port='COM28', bytesize=8, parity='E', baudrate = 115200, stopbits=1,timeout=0.5)
-    #ser_impresora = serial.Serial(port='COM7', bytesize=8, parity='N', baudrate = 115200, stopbits=1,timeout=0.5)
+    ser = serial.Serial(port=PUERTO_PLC, bytesize=8, parity='E', baudrate = 115200, stopbits=1,timeout=0.5)
+    #ser_impresora = serial.Serial(port=PUERTO_IMPRESORA, bytesize=8, parity='N', baudrate = 115200, stopbits=1,timeout=0.5)
 
     while True:
         line2= ""
