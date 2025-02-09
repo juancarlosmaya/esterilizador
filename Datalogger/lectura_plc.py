@@ -4,6 +4,9 @@ import datetime
 import fitz
 import pytz
 import re
+from envio_web import Client
+
+client = Client(server="http://esterilizacionremota.pythonanywhere.com/APIusuario/2/")
 
 # Nombre del PDF a crear
 NOMBRE_DE_ARCHIVO = "0"
@@ -23,7 +26,7 @@ DIRECTORIO= '..\servidor_local\static\ '    #WINDOWS
 #DIRECTORIO= '..//servidor_local//static//'     #LINUX
 
 ## puerto de comunicacion con PLC
-PUERTO_PLC = 'COM7'             #WINDOWS
+PUERTO_PLC = 'COM28'             #WINDOWS
 #PUERTO_PLC = '/dev/ttyUSB0'    #LINUX
 
 ## puerto de comunicacion con impresora, quitar comentarios más abajo
@@ -95,7 +98,13 @@ try:
             line2 = line2 +line
             guardar_pdf(line2)
             time.sleep(0.5)
-            line = ser.read_until()                            
+            line = ser.read_until() 
+            match = re.search(r'TEMP:\s*(\d+)\s*øC\s*P:\s*(\d+)\s*kpa', line.decode('Latin-1'))
+            if match:
+                temperatura = int(match.group(1))  # Extraer temperatura como entero
+                presion = int(match.group(2))  # Extraer presión como entero
+                print(f"Temperatura: {temperatura}°C, Presión: {presion} kPa")
+                client.EnviarDato(temperatura,presion)                           
             #ser_impresora.write(line)                           # envio de informació leida del plc a impresora
             line = line.decode('Latin-1').replace("\r", "\n")   # conversion a cadena de texto, remplazando retorno de carro por nueva linea
             print(line)
