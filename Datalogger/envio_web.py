@@ -20,6 +20,12 @@ class Client:
             return response.content
         return None
     
+    def POST(self, message):
+        response = requests.post(self.server, data=json.dumps(message), headers={"Content-Type": "application/json"})
+        if response.status_code > 0:
+            return response.content
+        return None
+    
     def EnviarDato(self, temperatura, presion):
         payload = self.GET()
         if payload is not None:

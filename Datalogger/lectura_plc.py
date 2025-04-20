@@ -6,7 +6,12 @@ import pytz
 import re
 from envio_web import Client
 
+# Cliente de servidor para el envio de información en tiempo real
 client = Client(server="http://esterilizacionremota.pythonanywhere.com/APIusuario/2/")
+
+# Cliente de servidor para envio de mensaje a base de datos de SMS a enviar
+client_sms = Client(server="https://mensajeriaremota.pythonanywhere.com/APIMensaje/")
+numero_telefonico ="+573005159575"
 
 # Nombre del PDF a crear
 NOMBRE_DE_ARCHIVO = "0"
@@ -109,6 +114,11 @@ try:
             line = line.decode('Latin-1').replace("\r", "\n")   # conversion a cadena de texto, remplazando retorno de carro por nueva linea
             print(line)
 
+        # Crar un nuevo mensaje y lo envia a la base de datos en servidor web
+        print("Crando un nuevo mensaje")
+        mensaje = f"Ciclo No. {numero_ciclo} en Tipo: {metadata['keywords'].split(',')[0].split(':')[1]} | Modelo: {metadata['keywords'].split(',')[1].split(':')[1]} terminado."
+        nuevo_mensaje = {'estado': 'PENDIENTE', 'numero_telefonico': numero_telefonico, 'mensaje': mensaje}
+        client_sms.POST(nuevo_mensaje)
             
 
         print("TIENE LA PALABRA DESCARGA")
