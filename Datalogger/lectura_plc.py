@@ -116,7 +116,7 @@ try:
 
         # Crar un nuevo mensaje y lo envia a la base de datos en servidor web
         print("Crando un nuevo mensaje")
-        mensaje = f"Ciclo No. {numero_ciclo} en Tipo: {metadata['keywords'].split(',')[0].split(':')[1]} | Modelo: {metadata['keywords'].split(',')[1].split(':')[1]} terminado."
+        mensaje = f"Ciclo No. {numero_ciclo} en Tipo: {metadata['keywords'].split(',')[0].split(':')[1]} | Modelo: {metadata['keywords'].split(',')[1].split(':')[1]} TERMINADO CON EXITO."
         nuevo_mensaje = {'estado': 'PENDIENTE', 'numero_telefonico': numero_telefonico, 'mensaje': mensaje}
         client_sms.POST(nuevo_mensaje)
             
