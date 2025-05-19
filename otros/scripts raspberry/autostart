@@ -1,0 +1,17 @@
+# Inicia el panel de LXDE
+@lxpanel --profile LXDE-pi
+
+# Muestra el escritorio
+@pcmanfm --desktop --profile LXDE-pi
+
+# Ejecuta el servidor Django
+# @lxterminal --hold -e /home/juanc/Desktop/prueba1.sh
+@lxterminal -e /bin/bash /home/juanc/Desktop/script_servidor_local.sh
+# @lxterminal --hold -e bash -c "sleep 5; /home/juanc/Desktop/script_servidor_local.sh"
+
+# Ejecuta el datalogger
+@lxterminal -e /bin/bash /home/juanc/Desktop/script_datalogger.sh
+
+# Inicia el protector de pantalla sin splash
+@xscreensaver -no-splash
+
