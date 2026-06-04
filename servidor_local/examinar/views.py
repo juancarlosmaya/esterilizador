@@ -8,39 +8,52 @@ import datetime
 import json
 
 # Create your views here.
+def index(request):
+    return render(request, "pagina_inicio.html")
+
 def listado_view(request):
-    DIRECTORIO= "/Esterilizador/servidor_local/static"
-    registrosi=os.listdir(DIRECTORIO)
+    DIRECTORIO = os.path.join(settings.BASE_DIR, 'static')
+    registrosi=os.listdir(DIRECTORIO)  ## Lista todos los archivos en la carpeta
     print(registrosi)
     print("EL MEDIA ROOT ES:")
     print(str(settings.MEDIA_ROOT))
 
-    registros_pdf = []
-    fechas = []
-    metadata_archivos = {} # Diccionario para almacenar metadatos
+    registros_validos = []             ## Lista para almacenar diccionarios {'pdf': nombre de archivo, 'nombre': nombre de archivo sin extension, 'fecha': fecha de creacion de archivo}
+    
     for archivo in registrosi:
-        if archivo.lower().endswith(".pdf"): # Verifica la extensión
-            registros_pdf.append(archivo)
+        if archivo.lower().endswith(".pdf"):
             ruta_completa = os.path.join(DIRECTORIO, archivo)
             try:
                 doc = fitz.open(ruta_completa)
                 metadata = doc.metadata
-                metadata_archivos[archivo] = metadata # Guarda los metadatos
-                print(f"Metadatos de {archivo}:")
-                for clave, valor in metadata.items():
-                    print(f"  {clave}: {valor}")
-                fechas.append(datetime.datetime.strptime(metadata['creationDate'][2:-1], "%Y%m%d%H%M%S")) # Guarda la fecha de creación
-                #xmp_data = doc.xmp_metadata
-                #if xmp_data:
-                #    print("\nMetadatos XMP:")
-                #    print(xmp_data)
-                #doc.close() # Cierra el documento después de usarlo
-            except fitz.fitz.FileDataError: #Manejo de error si el archivo no es un PDF válido
-                print(f"Error: {archivo} no es un PDF valido o está corrupto")
+                # Use current time as fallback if creationDate is missing or malformed
+                try:
+                    fecha_raw = metadata.get('creationDate', '')
+                    if fecha_raw and len(fecha_raw) >= 16:
+                        fecha = datetime.datetime.strptime(fecha_raw[2:16], "%Y%m%d%H%M%S")
+                    else:
+                        fecha = datetime.datetime.fromtimestamp(os.path.getmtime(ruta_completa))
+                except Exception:
+                    fecha = datetime.datetime.fromtimestamp(os.path.getmtime(ruta_completa))
+                
+                registros_validos.append({
+                    'pdf': archivo,
+                    'nombre': archivo[:-4],
+                    'fecha': fecha
+                })
+                doc.close()
             except Exception as e:
-                print(f"Error al leer metadatos de {archivo}: {e}")
-            registros_fechas = zip(registros_pdf, [archivo[:-4] for archivo in registros_pdf], fechas)  # guarda el listado de archivos en pdf, el litado de archivos sin extension, y las fechas de los registros
-    return render(request,"examinar/examinar.html",{'registros_fechas':registros_fechas})
+                print(f"Error procesando {archivo}: {e}")
+    
+    # Sort by date descending
+    registros_validos.sort(key=lambda x: x['fecha'], reverse=True)
+    
+    # Re-structure for the template (it expects a zip of 3 elements)
+    # Actually, it's easier to change the template to use the dict list, 
+    # but to maintain compatibility without major template changes:
+    registros_fechas = [ (r['pdf'], r['nombre'], r['fecha']) for r in registros_validos ]
+    
+    return render(request, "examinar/examinar.html", {'registros_fechas': registros_fechas})
 
 def extraer_texto_pdf(ruta_pdf):
     """
@@ -96,7 +109,7 @@ def procesar_datos_texto(texto):
 
 def examinar_registro(request,archivo):
     # Ruta al archivo PDF exportado como texto
-    ruta_archivo = "/Esterilizador/servidor_local/static/" + archivo +".pdf"
+    ruta_archivo = os.path.join(settings.BASE_DIR, 'static', f"{archivo}.pdf")
     # Extraer texto del PDF
     texto_extraido = extraer_texto_pdf(ruta_archivo)
 
@@ -108,7 +121,7 @@ def examinar_registro(request,archivo):
     print(f"Número de ciclo: {resultados['NUMERO_CICLO']}")
     print("Temperaturas (TEMP):", resultados["TEMP"])
     print("Presiones (P):", resultados["P"])
-    metadatos_final =[]
+    metadatos_formateados = []
     keywords_parts ={}
     fecha = ""
     hora = ""
@@ -143,10 +156,26 @@ def examinar_registro(request,archivo):
     except fitz.fitz.FileDataError: #Manejo de error si el archivo no es un PDF válido
             print(f"Error: {archivo} no es un PDF valido o está corrupto")
     except Exception as e:
-            print(f"Error al leer metadatos de {archivo}: {e}")
-    #registros_fechas = zip(registros_pdf, [archivo[:-4] for archivo in registros_pdf], fechas)  # guarda el listado de archivos en pdf, el litado de archivos sin extension, y las fechas de los registros
-    metadatos_final = list(keywords_parts.items()) + [('fecha de cracion de registro', fecha), ('hora de creacion de regitro', hora), ('numero de ciclo', numero_ciclo)]
+        print(f"Error al leer metadatos de {archivo}: {e}")
+    
+    # Formatear metadatos para visualización
+    
+    if keywords_parts:
+        for k, v in keywords_parts.items():
+            metadatos_formateados.append((k.replace('_', ' ').capitalize(), v))
+    
+    metadatos_formateados.extend([
+        ('Fecha de registro', fecha),
+        ('Hora de registro', hora),
+        ('Número de ciclo', numero_ciclo)
+    ])
 
-    return render(request,"examinar/examinar_registro.html",{'metadatos':metadatos_final,'temperaturas':resultados["TEMP"][1::],'presiones':resultados["P"]})
+    context = {
+        'metadatos': metadatos_formateados,
+        'temperaturas': json.dumps(resultados["TEMP"][1:]), # Skip first garbage value if exists or just pass all
+        'presiones': json.dumps(resultados["P"])
+    }
+
+    return render(request, "examinar/examinar_registro.html", context)
 
    

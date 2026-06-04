@@ -1,80 +1,82 @@
-{% extends "django_sb_admin/base.html" %}
-{% load static%}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Trazabilidad Esterilización{% endblock %}</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Config for Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        medical: {
+                            500: '#2b7a78', // Teal
+                            600: '#17252a', // Dark
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 font-sans text-gray-900 flex flex-col min-h-screen">
 
-{% block title %}Trazabilidad Esterilización{% endblock %}
-{% block sb_admin_header_url %}{% endblock sb_admin_header_url %}
-{% block sb_admin_header %}
-    <a href="">Trazabilidad Eserilización</a>
-{% endblock sb_admin_header %}
-{% block sb_admin_title %} Trazabilidad Esterilización {% endblock sb_admin_title %}
-{% block sb_admin_breadcrumb %}{% endblock sb_admin_breadcrumb %}
-{% block sb_admin_navbar_right %}{% endblock sb_admin_navbar_right %}
-
-{% block sb_admin_content %}
-    {% block content %}
-    {% endblock %}
-
-{% endblock sb_admin_content %}
-    
-{% block sb_admin_sidebar %}
-    
-        {% if request.user.is_authenticated %}
-            <li class="nav-item active">
-                <a class="nav-link" href="/revisar/">
-                    <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Revisar usuarios</span>
-                </a>
-            </li>
-
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <i class="fas fa-fw fa-table"></i>
-                  <span>Gestionar usuarios</span>
-                </a>
-                <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-                  <h6 class="dropdown-header">Nuevo usuario:</h6>
-                  <a class="dropdown-item" href="{% url 'nuevo_usuario' %}">Crear</a>
-                  <!--
-                  <a class="dropdown-item" href="{% url 'pagina_inicio' %}">Registro de nuevo paciente</a>
-                  <a class="dropdown-item" href="{% url 'pagina_inicio' %}">Forgot Password</a>
-                  -->
-                  <div class="dropdown-divider"></div>
-                  <h6 class="dropdown-header">Usuarios registrados</h6>
-                  <a class="dropdown-item" href="{% url 'modificar_seleccionar_usuario' %}">Modificar</a>
-                  <!--
-                  <a class="dropdown-item" href="{% url 'pagina_inicio' %}">Blank Page</a>
-                  -->
+    <!-- Navbar -->
+    <nav class="bg-medical-600 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="text-xl font-semibold">
+                        <i class="fas fa-chart-line mr-2"></i>Trazabilidad Esterilización
+                    </a>
                 </div>
-            </li>
+                <!-- Desktop Menu -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="/revisar/" class="hover:bg-medical-500 px-3 py-2 rounded-md text-sm font-medium">Revisar Ciclos</a>
+                        {% if request.user.is_authenticated %}
+                            <a href="/admin/" class="hover:bg-medical-500 px-3 py-2 rounded-md text-sm font-medium">Admin</a>
+                        {% else %}
+                            <a href="/admin/login/" class="hover:bg-medical-500 px-3 py-2 rounded-md text-sm font-medium">Login</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <!-- Mobile Menu Button -->
+                <div class="-mr-2 flex md:hidden">
+                    <button type="button" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="bg-medical-600 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-medical-500 focus:outline-none">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div class="hidden md:hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="/revisar/" class="text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-medical-500">Revisar Ciclos</a>
+                <a href="/admin/" class="text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-medical-500">Administración</a>
+            </div>
+        </div>
+    </nav>
 
-            <li class="nav-item">
-                <a class="nav-link" href="/terapias">
-                  <i class="fas fa-fw fa-folder"></i>
-                  <span>Gestionar terapias</span></a>
-            </li>
-            
-            <li class="nav-item">
-                <a class="nav-link" href="">
-                  <i class="fas fa-sign-out-alt"></i>
-                  <span>Salir</span></a>
-            </li>
-            
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {% block content %}
+        {% endblock %}
+    </main>
 
-            
-        {% else %}
-            <li class="nav-item">
-                <a class="nav-link" href="">
-                <i class="fas fa-sign-in-alt"></i>
-                <span>Ingresar</span></a>
-            </li>
-        {% endif %}
+    <!-- Footer -->
+    <footer class="bg-white border-t mt-auto">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <p class="text-center text-gray-500 text-sm">
+                &copy; 2026 Trazabilidad Esterilización. Todos los derechos reservados.
+            </p>
+        </div>
+    </footer>
 
-    
-
-            
-
-
-{% endblock sb_admin_sidebar %}
-
-{% block sb_admin_copyright %}Version django3. Derechos reservados © Trazabilidad Esterilización 2025{% endblock sb_admin_copyright %}
-
+</body>
+</html>

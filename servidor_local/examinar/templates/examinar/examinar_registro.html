@@ -1,75 +1,90 @@
-
 {% extends 'base.html' %}
 {% load static %}
 
 {% block content %}
 
-<ol class="breadcrumb mb-4">
-    <li class="breadcrumb-item active">Revisar Ciclos de Esterilización</li>
-</ol>
+<!-- Header / Navigation -->
+<div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+    <div>
+        <nav class="text-sm font-medium text-gray-500 mb-1">
+            <a href="/revisar/" class="hover:text-teal-600">Ciclos</a>
+            <span class="mx-2">/</span>
+            <span class="text-gray-900">Detalle</span>
+        </nav>
+        <h1 class="text-3xl font-bold text-gray-800">Detalle del Ciclo</h1>
+    </div>
+    <div class="mt-4 sm:mt-0">
+        <a href="/revisar/"
+            class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-teal-700 bg-teal-100 hover:bg-teal-200 focus:outline-none">
+            <i class="fas fa-arrow-left mr-2"></i> Volver al listado
+        </a>
+    </div>
+</div>
 
-    <small >
-        <div class="card mb-3">
-
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-striped table-sm dataTable" id="" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 50%;margin: auto">
-                        <thead >
-                            <tr role="row"><th class="sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 40%;">Metadato</th><th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 60%;">Valor</th>
-                        </thead>
-                        <tbody>
-                        <tbody>
-                            
-                        <tbody>                            
-                            
-                            {% for clave, valor in metadatos %}
-                            <tr>
-                                <td scope="col"> {{clave}} </td>
-                                <td scope="col"> {{valor}}</a> </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                <!-- Area Chart Example-->
-                <div class="card mb-3">
-                    <div class="card-header">
-                    <i class="fas fa-chart-area"></i>
-                    Regitro de temperatura y presión</div>
-                    <div class="card-body">
-                        <canvas id="grafica" width="100%" height="30"></canvas>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Metadata Panel -->
+    <div class="lg:col-span-1 space-y-6">
+        <!-- Key Metrics Cards -->
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+            <div class="px-4 py-5 sm:p-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+                    <i class="fas fa-info-circle text-teal-500 mr-2"></i> Información del Ciclo
+                </h3>
+                <dl class="divide-y divide-gray-200">
+                    {% for clave, valor in metadatos %}
+                    <div class="py-3 flex justify-between text-sm">
+                        <dt class="text-gray-500 capitalize">{{ clave|lower }}</dt>
+                        <dd class="text-gray-900 font-medium text-right">{{ valor }}</dd>
                     </div>
-                    <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
-                </div>
-  
+                    {% endfor %}
+                </dl>
             </div>
-            <div style="text-align: center;">
-                <a href="{%url 'home' %}" class="btn btn-success"> Volver </a>
-                </div>
-                <br>
         </div>
-    </small>
+    </div>
 
+    <!-- Chart Panel -->
+    <div class="lg:col-span-2">
+        <div class="bg-white shadow rounded-lg overflow-hidden h-full">
+            <div class="px-4 py-5 border-b border-gray-200 sm:px-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">
+                    <i class="fas fa-chart-line text-teal-500 mr-2"></i> Gráfica de Proceso
+                </h3>
+                <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                    Monitoreo de Temperatura (°C) y Presión (kPa) en tiempo real.
+                </p>
+            </div>
+            <div class="p-4">
+                <div class="relative w-full h-80 sm:h-96">
+                    <canvas id="grafica"></canvas>
+                </div>
+            </div>
+            <div class="bg-gray-50 px-4 py-4 sm:px-6">
+                <div class="text-sm">
+                    <span
+                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mr-2">
+                        <span class="w-2 h-2 mr-1 bg-blue-500 rounded-full"></span> Temperatura
+                    </span>
+                    <span
+                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                        <span class="w-2 h-2 mr-1 bg-red-500 rounded-full"></span> Presión
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-
-{% endblock %}
-
-
-{% block sb_admin_custom_js %}
-
+<!-- Data Injection -->
 <script>
     // Pass the 'temperaturas' and 'presiones' array to a global variable accessible by graficar.js
-    var temperaturas = JSON.parse('{{ temperaturas|escapejs }}');
-    var presiones = JSON.parse('{{ presiones|escapejs }}');
+    var temperaturas = {{ temperaturas| safe }};
+    var presiones = {{ presiones| safe }};
 </script>
 
-    <script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
+<!-- Chart.js Legacy (v2.9.4 for compatibility with existing JS) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
 
-    <script id="graficar.js" src="{% static 'examinar/graficar.js' %}" ></script>
+<!-- Custom Chart Logic -->
+<script src="{% static 'examinar/graficar.js' %}"></script>
 
-    chart.datasets.label= 'etiqueta';
-
-    chart.update();
-
-
-{% endblock sb_admin_custom_js %}
+{% endblock %}

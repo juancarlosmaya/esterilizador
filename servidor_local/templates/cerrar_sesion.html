@@ -1,9 +1,26 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
-{% block title %}{% trans "Logged out" %}{% endblock %}
+{% block title %}{% trans "Sesión Cerrada" %}{% endblock %}
 
 {% block content %}
-<p>{% trans "Successfully logged out" %}.</p>
-{% endblock %}
+<div class="flex items-center justify-center min-h-[calc(100vh-200px)]">
+    <div class="text-center bg-white p-12 rounded-3xl shadow-sm border border-gray-100 max-w-sm w-full">
+        <div class="bg-teal-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-teal-600">
+            <i class="fas fa-sign-out-alt text-3xl"></i>
+        </div>
+        <h2 class="text-2xl font-extrabold text-gray-800 mb-2">{% trans "Sesión Finalizada" %}</h2>
+        <p class="text-gray-500 mb-8">Has cerrado sesión correctamente. ¡Vuelve pronto!</p>
 
+        <a href="{% url 'home' %}"
+            class="inline-block bg-medical-500 hover:bg-teal-700 text-white font-bold py-3 px-8 rounded-xl transition-colors duration-200 w-full shadow-md">
+            Ir al Inicio
+        </a>
+
+        <p class="mt-6 text-sm text-gray-400">
+            ¿Deseas ingresar de nuevo? <a href="/admin/login/" class="text-teal-600 font-bold hover:underline">Inicia
+                sesión aquí</a>.
+        </p>
+    </div>
+</div>
+{% endblock %}

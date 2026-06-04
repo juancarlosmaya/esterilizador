@@ -1,8 +1,8 @@
-from django.contrib import admin
-from django.urls import path,include
-from .views import listado_view,examinar_registro
+from django.urls import path
+from .views import index, listado_view, examinar_registro
 
 urlpatterns = [
-    path('', listado_view, name='home'),
-    path("<str:archivo>/", examinar_registro),
+    path('', index, name='index'),
+    path('revisar/', listado_view, name='home'),
+    path('revisar/<str:archivo>/', examinar_registro, name='detalle'),
 ]

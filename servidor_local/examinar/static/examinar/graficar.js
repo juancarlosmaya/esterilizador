@@ -1,13 +1,13 @@
-// Set new default font family and font color to mimic Bootstrap's default styling
-Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
-Chart.defaults.global.defaultFontColor = '#292b2c';
+// Set new default font family and font color to mimic Tailwind's default styling
+Chart.defaults.global.defaultFontFamily = 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
+Chart.defaults.global.defaultFontColor = '#2b7a78';
 console.log(temperaturas.length);  // Output the array to check it's accessible
 console.log(presiones.length);  // Output the array to check it's accessible
 
 // Area Chart Example  
-var ejeX =[];
-for (i=0;i<temperaturas.length;i++){
-  ejeX[i]=i;
+var ejeX = [];
+for (i = 0; i < temperaturas.length; i++) {
+  ejeX[i] = i;
 }
 
 var ctx = document.getElementById("grafica");

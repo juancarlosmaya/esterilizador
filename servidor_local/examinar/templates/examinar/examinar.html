@@ -1,40 +1,70 @@
-
 {% extends 'base.html' %}
 {% load static %}
 
 {% block content %}
 
-<ol class="breadcrumb mb-4">
-    <li class="breadcrumb-item active">Revisar Ciclos de Esterilización</li>
-</ol>
+<div class="mb-6">
+    <h1 class="text-3xl font-bold text-gray-800">Historial de Ciclos</h1>
+    <p class="text-gray-600 mt-2">Registro completo de procesos de esterilización.</p>
+</div>
 
-    <small >
-        <div class="card mb-3">
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
-                        <thead>
-                            <tr role="row"><th class="sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 157px;">Fecha y hora</th><th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 248px;">Registro del ciclo de esterilización</th><th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 248px;">Registro del ciclo de esterilización</th></tr>
-                        </thead>
-                        <tbody>
-                            
-                            {% for registro, registro_sin_extension, fecha in registros_fechas %}
-                            <tr>
-                                <!--<td scope="col"> 2 </td> -->
-                                <td scope="col"> {{fecha}} </td>
-                                <td scope="col"> <a href="{% static registro%}" target="_blank">{{registro}}</a> </td>
-                                <td scope="col"> <a href= "{{ registro_sin_extension }}" target="_blank"> Examinar registro </a> </td>
-                            </tr>
-                            {% endfor %}
-          
-                        </tbody>
-                    </table>
-                </div>
+<!-- Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for registro, registro_sin_extension, fecha in registros_fechas %}
+    <div
+        class="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100">
+        <!-- Card Header -->
+        <div class="px-6 py-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
+            <h3 class="text-lg font-semibold text-gray-800 truncate" title="{{ registro }}">
+                <i class="fas fa-file-medical-alt text-teal-600 mr-2"></i>
+                {{ registro_sin_extension}} <!-- Remove .pdf extension visually if possible, or just 'Ciclo...' -->
+            </h3>
+            <!-- Status Indicator (Mockup) -->
+            
+            <!-- Insdicador de estado, faltante en metadatos
+            <span
+                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                Completo
+            </span>
+            -->
+        </div>
+
+        <!-- Card Body -->
+        <div class="px-6 py-4">
+            <div class="flex items-center text-gray-500 text-sm mb-2">
+                <i class="far fa-calendar-alt mr-2 w-4"></i>
+                <span>{{ fecha|date:"d M Y" }}</span>
+            </div>
+            <div class="flex items-center text-gray-500 text-sm">
+                <i class="far fa-clock mr-2 w-4"></i>
+                <span>{{ fecha|date:"H:i" }}</span>
             </div>
         </div>
-    </small>
 
-    
-                    
+        <!-- Card Footer (Actions) -->
+        <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex space-x-3">
+            <a href="{{ registro_sin_extension }}"
+                class="flex-1 text-center bg-medical-500 hover:bg-teal-700 text-white text-sm font-medium py-2 px-4 rounded transition-colors">
+                Ver Detalles
+            </a>
+            <a href="{% static registro %}" target="_blank"
+                class="flex-none bg-white hover:bg-gray-100 text-gray-600 border border-gray-300 text-sm font-medium py-2 px-3 rounded transition-colors"
+                title="Descargar PDF Original">
+                <i class="fas fa-download"></i>
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% if not registros_fechas %}
+<div class="text-center py-12">
+    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+        <i class="fas fa-inbox text-gray-400 text-2xl"></i>
+    </div>
+    <h3 class="text-lg font-medium text-gray-900">No hay registros</h3>
+    <p class="text-gray-500">Aún no se han generado ciclos de esterilización.</p>
+</div>
+{% endif %}
+
 {% endblock %}
-

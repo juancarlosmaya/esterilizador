@@ -1,0 +1,27 @@
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+entorno_esterilizacion/
+venv/
+env/
+.venv/
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+media/
+
+# IDEs
+.vscode/
+.idea/
+
+# Other
+.DS_Store
+*.rar
+*.zip
+notes.txt
