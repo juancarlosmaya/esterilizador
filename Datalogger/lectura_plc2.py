@@ -6,6 +6,8 @@ import pytz
 import re
 from envio_web import Client
 
+###EN ESTA VERSION SE DESHABILITA PUENTE DE IMPRESIóN A IMPRESORA, SE USA DERIVACION EN T DB9
+
 # Cliente de servidor para el envio de información en tiempo real
 client = Client(server="http://esterilizacionremota.pythonanywhere.com/APIusuario/2/")
 
@@ -27,15 +29,15 @@ metadata = {
 }
 
 # Ubicación del PDF a crear
-DIRECTORIO= '..\servidor_local\static\ '    #WINDOWS
-#DIRECTORIO= '..//servidor_local//static//'     #LINUX
+#DIRECTORIO= '..\servidor_local\static\ '    #WINDOWS
+DIRECTORIO= '..//servidor_local//static//'     #LINUX
 
 ## puerto de comunicacion con PLC
 #PUERTO_PLC = 'COM28'             #WINDOWS
 PUERTO_PLC = '/dev/ttyUSB0'    #LINUX
 
 ## puerto de comunicacion con impresora, quitar comentarios más abajo
-#PUERTO_IMPRESORA = '/dev/ttyUSB1'    #LINUX
+PUERTO_IMPRESORA = '/dev/ttyUSB1'    #LINUX
 
 def guardar_pdf(texto):
     doc = fitz.open()
@@ -60,7 +62,8 @@ def guardar_pdf(texto):
         metadata["creationDate"] = today.strftime("D:%Y%m%d%H%M%S")
         print(metadata)
         doc.set_metadata(metadata)
-        doc.save("..\\servidor_local\\static\\" + NOMBRE_DE_ARCHIVO + ".pdf")
+        print(DIRECTORIO + NOMBRE_DE_ARCHIVO + ".pdf")
+        doc.save(DIRECTORIO + NOMBRE_DE_ARCHIVO + ".pdf")
         doc.close()
     except Exception as e:
         print(f"Error al agregar metadatos con pymupdf: {e}")
@@ -72,7 +75,7 @@ print("abriendo pueto")
 try:
     #ser = serial.Serial(port='COM7', bytesize=8, parity='E', baudrate = 19600, stopbits=1,timeout=0.5)
     ser = serial.Serial(port=PUERTO_PLC, bytesize=8, parity='E', baudrate = 115200, stopbits=1,timeout=0.5)
-    ser_impresora = serial.Serial(port=PUERTO_IMPRESORA, bytesize=8, parity='N', baudrate = 115200, stopbits=1,timeout=0.5)
+    #ser_impresora = serial.Serial(port=PUERTO_IMPRESORA, bytesize=8, parity='N', baudrate = 115200, stopbits=1,timeout=0.5)
 
     while True:
         line2= ""
@@ -81,7 +84,7 @@ try:
         while not ("FECHA" in  line):
             print("...")
             line = ser.read_until()                             # lectura de cadena recibida en binario
-            ser_impresora.write(line)                           # envio de informació leida del plc a impresora     
+            #ser_impresora.write(line)                           # envio de informació leida del plc a impresora     
             line = line.decode('Latin-1').replace("\r", "\n")   # conversion a cadena de texto, remplazando retorno de carro por nueva linea
         
         print("TIENE LA PALABRA FECHA")
@@ -110,7 +113,7 @@ try:
                 presion = int(match.group(2))  # Extraer presión como entero
                 print(f"Temperatura: {temperatura}°C, Presión: {presion} kPa")
                 client.EnviarDato(temperatura,presion)                           
-            ser_impresora.write(line)                           # envio de informació leida del plc a impresora
+            #ser_impresora.write(line)                           # envio de informació leida del plc a impresora
             line = line.decode('Latin-1').replace("\r", "\n")   # conversion a cadena de texto, remplazando retorno de carro por nueva linea
             print(line)
 
