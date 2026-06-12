@@ -27,8 +27,8 @@ metadata = {
 }
 
 # Ubicación del PDF a crear
-DIRECTORIO= '..\servidor_local\static\ '    #WINDOWS
-#DIRECTORIO= '..//servidor_local//static//'     #LINUX
+#DIRECTORIO= '..\servidor_local\static\ '    #WINDOWS
+DIRECTORIO= '..//servidor_local//static//'     #LINUX
 
 ## puerto de comunicacion con PLC
 #PUERTO_PLC = 'COM28'             #WINDOWS
