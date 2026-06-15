@@ -5,6 +5,7 @@ import fitz
 import pytz
 import re
 from envio_web import Client
+import platform
 
 # Cliente de servidor para el envio de información en tiempo real
 client = Client(server="http://esterilizacionremota.pythonanywhere.com/APIusuario/2/")
@@ -26,16 +27,29 @@ metadata = {
     'creationDate' : '' ## se asigna más abajo
 }
 
-# Ubicación del PDF a crear
-#DIRECTORIO= '..\servidor_local\static\ '    #WINDOWS
-DIRECTORIO= '..//servidor_local//static//'     #LINUX
+print(platform.system())
+if platform.system() == "Windows":
+    print("Es windows")
+    # Ubicación del PDF a crear
+    DIRECTORIO= '..\servidor_local\static\ '    #WINDOWS
 
-## puerto de comunicacion con PLC
-#PUERTO_PLC = 'COM28'             #WINDOWS
-PUERTO_PLC = '/dev/ttyUSB0'    #LINUX
+    # puerto de comunicacion con PLC
+    PUERTO_PLC = 'COM28'             #WINDOWS
+    
+    ## puerto de comunicacion con impresora, quitar comentarios más abajo
+    PUERTO_IMPRESORA = 'COM4'    #LINUX
+    
+   
+if platform.system() == "Linux":
+    print("Es linux")
+    # Ubicación del PDF a crear
+    DIRECTORIO= '..//servidor_local//static//'     #LINUX
 
-## puerto de comunicacion con impresora, quitar comentarios más abajo
-#PUERTO_IMPRESORA = '/dev/ttyUSB1'    #LINUX
+    # puerto de comunicacion con PLC
+    PUERTO_PLC = '/dev/ttyUSB0'    #LINUX
+
+    ## puerto de comunicacion con impresora, quitar comentarios más abajo
+    PUERTO_IMPRESORA = '/dev/ttyUSB1'    #LINUX
 
 def guardar_pdf(texto):
     doc = fitz.open()
