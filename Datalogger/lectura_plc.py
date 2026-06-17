@@ -8,7 +8,8 @@ from envio_web import Client
 import platform
 
 # Cliente de servidor para el envio de información en tiempo real
-client = Client(server="http://esterilizacionremota.pythonanywhere.com/APIusuario/2/")
+#client = Client(server="http://esterilizacionremota.pythonanywhere.com/APIusuario/2/")
+client = Client(server="https://monitorizacionesterilizacion.pythonanywhere.com/APIesterilizador/1/")
 
 # Cliente de servidor para envio de mensaje a base de datos de SMS a enviar
 client_sms = Client(server="https://mensajeriaremota.pythonanywhere.com/APIMensaje/")

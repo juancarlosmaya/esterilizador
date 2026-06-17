@@ -32,14 +32,15 @@ class Client:
             doc = json.loads(payload)
            
            # actualizar señal de temperatura
-            senal_antes = doc['pletismografia']['senal']
+            senal_antes = doc['temperatura']['senal']
             print(senal_antes)
             senal = senal_antes
             for i in range(255):
                 senal[i] = senal_antes[i + 1]
             senal[255]=temperatura
+            doc["temperatura_actual"]= temperatura
             for j in range(255):
-                doc["pletismografia"]["senal"][j] = int(senal[j])
+                doc["temperatura"]["senal"][j] = int(senal[j])
 
             # actualizar señal de presion
             senal_antes = doc['presion']['senal']
@@ -48,6 +49,7 @@ class Client:
             for i in range(255):
                 senal[i] = senal_antes[i + 1]
             senal[255]=presion
+            doc["presion_actual"]= presion
             for j in range(255):
                 doc["presion"]["senal"][j] = int(senal[j])
 
