@@ -133,7 +133,7 @@ try:
         print("Crando un nuevo mensaje")
         mensaje = f"Ciclo No. {numero_ciclo} en Tipo: {metadata['keywords'].split(',')[0].split(':')[1]} | Modelo: {metadata['keywords'].split(',')[1].split(':')[1]} TERMINADO CON EXITO."
         nuevo_mensaje = {'estado': 'PENDIENTE', 'numero_telefonico': numero_telefonico, 'mensaje': mensaje}
-        client_sms.POST(nuevo_mensaje)
+        #client_sms.POST(nuevo_mensaje)
             
 
         print("TIENE LA PALABRA DESCARGA")
