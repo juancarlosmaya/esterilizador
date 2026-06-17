@@ -38,7 +38,7 @@ if platform.system() == "Windows":
     PUERTO_PLC = 'COM28'             #WINDOWS
     
     ## puerto de comunicacion con impresora, quitar comentarios más abajo
-    PUERTO_IMPRESORA = 'COM4'    #LINUX
+    #PUERTO_IMPRESORA = 'COM4'    #LINUX
     
    
 if platform.system() == "Linux":
@@ -50,7 +50,7 @@ if platform.system() == "Linux":
     PUERTO_PLC = '/dev/ttyUSB0'    #LINUX
 
     ## puerto de comunicacion con impresora, quitar comentarios más abajo
-    PUERTO_IMPRESORA = '/dev/ttyUSB1'    #LINUX
+    #PUERTO_IMPRESORA = '/dev/ttyUSB1'    #LINUX
 
 def guardar_pdf(texto):
     doc = fitz.open()
@@ -75,7 +75,8 @@ def guardar_pdf(texto):
         metadata["creationDate"] = today.strftime("D:%Y%m%d%H%M%S")
         print(metadata)
         doc.set_metadata(metadata)
-        doc.save("..\\servidor_local\\static\\" + NOMBRE_DE_ARCHIVO + ".pdf")
+        print(DIRECTORIO + NOMBRE_DE_ARCHIVO + ".pdf")
+        doc.save(DIRECTORIO + NOMBRE_DE_ARCHIVO + ".pdf")
         doc.close()
     except Exception as e:
         print(f"Error al agregar metadatos con pymupdf: {e}")
@@ -87,7 +88,7 @@ print("abriendo pueto")
 try:
     #ser = serial.Serial(port='COM7', bytesize=8, parity='E', baudrate = 19600, stopbits=1,timeout=0.5)
     ser = serial.Serial(port=PUERTO_PLC, bytesize=8, parity='E', baudrate = 115200, stopbits=1,timeout=0.5)
-    ser_impresora = serial.Serial(port=PUERTO_IMPRESORA, bytesize=8, parity='N', baudrate = 115200, stopbits=1,timeout=0.5)
+    #ser_impresora = serial.Serial(port=PUERTO_IMPRESORA, bytesize=8, parity='N', baudrate = 115200, stopbits=1,timeout=0.5)
 
     while True:
         line2= ""
@@ -96,7 +97,7 @@ try:
         while not ("FECHA" in  line):
             print("...")
             line = ser.read_until()                             # lectura de cadena recibida en binario
-            ser_impresora.write(line)                           # envio de informació leida del plc a impresora     
+            #ser_impresora.write(line)                           # envio de informació leida del plc a impresora     
             line = line.decode('Latin-1').replace("\r", "\n")   # conversion a cadena de texto, remplazando retorno de carro por nueva linea
         
         print("TIENE LA PALABRA FECHA")
@@ -117,15 +118,16 @@ try:
             print(ser.in_waiting)
             line2 = line2 +line
             guardar_pdf(line2)
-            time.sleep(0.5)
+            #time.sleep(0.5)
             line = ser.read_until() 
             match = re.search(r'TEMP:\s*(\d+)\s*øC\s*P:\s*(\d+)\s*kpa', line.decode('Latin-1'))
             if match:
                 temperatura = int(match.group(1))  # Extraer temperatura como entero
                 presion = int(match.group(2))  # Extraer presión como entero
                 print(f"Temperatura: {temperatura}°C, Presión: {presion} kPa")
-                client.EnviarDato(temperatura,presion)                           
-            ser_impresora.write(line)                           # envio de informació leida del plc a impresora
+                client.EnviarDato(temperatura,presion)
+                print("ENVIADO")                            
+            #ser_impresora.write(line)                           # envio de informació leida del plc a impresora
             line = line.decode('Latin-1').replace("\r", "\n")   # conversion a cadena de texto, remplazando retorno de carro por nueva linea
             print(line)
 
